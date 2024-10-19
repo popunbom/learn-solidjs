@@ -1,7 +1,8 @@
+import { Board } from "@/lib/board"
 import Cell from "./Cell"
 
 type Props = {
-  box: number[][]
+  box: Board
 }
 
 export default function Box(props: Props) {

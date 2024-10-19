@@ -1,15 +1,19 @@
+import { createMemo } from "solid-js";
+
+import { Board as BoardData } from "@/lib/board";
+
 import Box from "./Box";
 
 import "./style.css";
 
 type Props = {
-  board: number[][]
+  board: BoardData
 }
 
 export default function Board(props: Props) {
   const boxSize = 3;
-
-  const box: number[][][][] = 
+  
+  const box = createMemo(() => 
     Array.from({ length: boxSize }, (_, i) => (
       Array.from({ length: boxSize }, (_, j) => (
         Array.from({ length: boxSize }, (_, k) => (
@@ -18,15 +22,17 @@ export default function Board(props: Props) {
           ))
         ))
       ))
-    ));
+    ))
+  );
+
 
   return (
     <div class="board">
-      {box.map((row, i) => (
+      {box().map((row) => (
         <div class="row">
-          {row.map((_, j) => (
+          {row.map((v) => (
             <Box
-              box={box[i][j]}
+              box={v}
             />
           ))}
         </div>

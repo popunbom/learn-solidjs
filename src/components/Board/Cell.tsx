@@ -1,5 +1,7 @@
+import { Cell as CellType } from "@/lib/board"
+
 type Props = {
-  value: number
+  value: CellType
 }
 
 export default function Cell(props: Props) {
