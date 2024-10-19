@@ -7,7 +7,15 @@ type Props = {
 export default function Cell(props: Props) {
   return (
     <>
-      <div class="cell">{props.value}</div>
+      <div class="cell">
+        <input 
+          type="number" 
+          min="1" 
+          max="9" 
+          value={props.value ?? ""}
+          readOnly={props.value !== null}
+        />
+      </div>
     </>
   )
 }
