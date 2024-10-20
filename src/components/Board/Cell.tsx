@@ -14,9 +14,11 @@ export default function Cell({ i, j }: Props) {
   const handleOnInput: JSX.EventHandler<HTMLInputElement, InputEvent> = (e) => {
     const value = parseInt(e.currentTarget.value)
     if (Number.isNaN(value)) {
+      updateBoard(i, j, null);
       return
     }
     if (value < min || value > max) {
+      updateBoard(i, j, null);
       return
     }
     

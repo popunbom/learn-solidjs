@@ -25,9 +25,13 @@ export function refreshBoard() {
   setBoard(initBoard(boardSize, nBlanks()));
 }
 
-export function updateBoard(i: number, j: number, v: number) {
+export function updateBoard(i: number, j: number, v: number | null) {
   const newBoard = board().map((row) => row.slice());
-  newBoard[i][j] = { value: v, isFixed: false, state: 'defined' };
+  if (v === null) {
+    newBoard[i][j] = { value: v, state: 'undefined' };
+  } else {
+    newBoard[i][j] = { value: v, isFixed: false, state: 'defined' };
+  }
 
   setBoard(updateStates(newBoard));
 }

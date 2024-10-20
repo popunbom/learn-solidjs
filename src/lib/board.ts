@@ -105,57 +105,66 @@ export function updateStates(board: Board): Board {
   const boardSize = board.length;
   const boxSize = computeBoxSize(boardSize);
 
-  const isFilled = (cells: Cell[]): cells is DefinedCell[] =>
-    cells.every(c => c.state !== 'undefined');
+  const isFilled = (cells: Cell[]) =>
+    cells.every(c => c.value !== null);
   const isQualified = (cells: DefinedCell[]): boolean => {
     const values = cells.map(c => c.value);
     return new Set(values).size === values.length;
   }
 
-  // Scan row
+  // Rollback to 'undefined' or 'defined'
   for (let i = 0; i < boardSize; i++) {
-    const cellInRow = Array.from({ length: boardSize }, (_, k) => board[i][k]);
-    if (isFilled(cellInRow)) {
-      console.log(`Row ${i} is finished`);
-      if (isQualified(cellInRow)) {
-        cellInRow.forEach(c => c.state = 'finished');
+    for (let j = 0; j < boardSize; j++) {
+      if (board[i][j].value !== null) {
+        continue;
+      }
+      const cellGroups: Cell[][] = [
+        // Row
+        Array.from({ length: boardSize }, (_, k) => board[i][k]),
+        // Column
+        Array.from({ length: boardSize }, (_, k) => board[k][j]),
+        // Box
+        Array.from({ length: boxSize }).map((_, k) =>
+          Array.from({ length: boxSize }).map((_, l) =>
+            board[(Math.floor(i / boxSize) * boxSize) + k][(Math.floor(j / boxSize) * boxSize) + l])
+        ).flat()
+      ]
+      cellGroups.forEach(cells =>
+        cells.forEach(c => (c.value === null) ? c.state = 'undefined' : c.state = 'defined')
+      );
+    }
+  }
+
+  // Scan 'finish' or 'error'
+  const cellGroups: Cell[][] = [
+    // Rows
+    ...Array.from({ length: boardSize }, (_, i) =>
+      Array.from({ length: boardSize }, (_, j) => board[i][j])
+    ),
+    // Columns
+    ...Array.from({ length: boardSize }, (_, j) =>
+      Array.from({ length: boardSize }, (_, i) => board[i][j])
+    ),
+    // Boxes
+    ...Array.from({ length: boxSize }).map((_, i) =>
+      Array.from({ length: boxSize }).map((_, j) =>
+        Array.from({ length: boxSize }).map((_, k) =>
+          Array.from({ length: boxSize }).map((_, l) =>
+            board[(i * boxSize) + k][(j * boxSize) + l]
+          )
+        ).flat()
+      )
+    ).flat()
+  ];
+  cellGroups.forEach(cells => {
+    if (isFilled(cells)) {
+      if (isQualified(cells as DefinedCell[])) {
+        cells.forEach(c => c.state = 'finished');
       } else {
-        cellInRow.forEach(c => c.state = 'error');
+        cells.forEach(c => c.state = 'error');
       }
     }
-  }
-
-  // Scan column
-  for (let j = 0; j < boardSize; j++) {
-    const cellInColumn = Array.from({ length: boardSize }, (_, k) => board[k][j]);
-    if (isFilled(cellInColumn)) {
-      console.log(`Column ${j} is finished`);
-      if (isQualified(cellInColumn)) {
-        cellInColumn.forEach(c => c.state = 'finished');
-      } else {
-        cellInColumn.forEach(c => c.state = 'error');
-      }
-    }
-  }
-
-  // Scan box
-  for (let i = 0; i < boxSize; i++) {
-    for (let j = 0; j < boxSize; j++) {
-      const cellInBox = Array.from({ length: boxSize }).map((_, k) =>
-        Array.from({ length: boxSize }).map((_, l) =>
-          board[(i * boxSize) + k][(j * boxSize) + l])
-      ).flat();
-
-      if (isFilled(cellInBox)) {
-        console.log(`Box (${i}, ${j}) is finished`);
-        if (isQualified(cellInBox)) {
-          cellInBox.forEach(c => c.state = 'finished');
-        } else {
-          cellInBox.forEach(c => c.state = 'error');
-        }
-      }
-    }
-  }
+  });
 
   return board;
 }
@@ -163,8 +172,3 @@ export function updateStates(board: Board): Board {
 export function isCleared(board: Board): boolean {
   return board.every(row => row.every(c => c.state === 'finished'));
 }
-
-(() => {
-  const board = initBoard(9, 40)
-  console.log(board);
-})()
