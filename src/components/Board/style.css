@@ -64,3 +64,8 @@ input::-webkit-inner-spin-button {
   background-color: #d7e5da;
   color: #00831c;
 }
+
+.cell[cell-state="error"] {
+  background-color: #f8d7da;
+  color: #721c24;
+}
