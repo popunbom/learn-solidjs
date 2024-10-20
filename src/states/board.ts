@@ -9,7 +9,10 @@ const boardSize = 9;
 const [board, setBoard] = createSignal(initBoard(boardSize, nBlanks()));
 createEffect(() => {
   if (isCleared(board())) {
-    alert("Congratulations! You've solved the puzzle!");
+    setTimeout(() => {
+      alert("Congratulations! You've solved the puzzle!");
+      refreshBoard();
+    }, 10);
   }
 })
 

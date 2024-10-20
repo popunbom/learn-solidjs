@@ -66,5 +66,5 @@ input::-webkit-inner-spin-button {
 }
 
 .cell[fixed=true] {
-  opacity: 0.4;
+  opacity: 0.5;
 }
