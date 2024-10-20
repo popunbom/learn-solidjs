@@ -1,23 +1,10 @@
-import { Board as BoardData } from "@/lib/board";
-
-import "./style.css";
 import Cell from "./Cell";
 
-type Props = {
-  board: BoardData
-  onChangeBoard: (board: BoardData) => void
-}
+import "./style.css";
 
-export default function Board(props: Props) {
+export default function Board() {
   const boxSize = 3;
-
-  const onChangeCell = (i: number, j: number, v: number) => {
-    console.log(`onChangeCell(${i}, ${j}, ${v})`);
-    
-    props.board[i][j] = v;
-    props.onChangeBoard(props.board);
-  }
-
+  
   return (
     <div class="board">
       {Array.from({ length: boxSize }).map((_, i) => (
@@ -28,8 +15,8 @@ export default function Board(props: Props) {
             <div class="row">
             {Array.from({ length: boxSize }).map((_, l) => (
               <Cell
-                value={props.board[i * boxSize + k][j * boxSize + l]}
-                onChange={(value) => onChangeCell(i * boxSize + k, j * boxSize + l, value)}
+                i={i * boxSize + k}
+                j={j * boxSize + l}
               />
             ))}
             </div>

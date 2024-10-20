@@ -1,12 +1,13 @@
-import { Cell as CellType } from "@/lib/board"
 import { JSX } from "solid-js/jsx-runtime"
 
+import { getBoard, setBoard } from "@/states/board"
+
 type Props = {
-  value: CellType
-  onChange: (value: number) => void
+  i: number
+  j: number
 }
 
-export default function Cell(props: Props) {
+export default function Cell({ i, j }: Props) {
   const [min, max] = [1, 9];
 
   const handleOnInput: JSX.EventHandler<HTMLInputElement, InputEvent> = (e) => {
@@ -17,8 +18,15 @@ export default function Cell(props: Props) {
     if (value < min || value > max) {
       return
     }
-    props.onChange(value)
+    
+    console.log(`[UPDATE] board[${i}][${j}] = ${value}`);
+    
+    const newBoard = getBoard().map((row) => row.slice());
+    newBoard[i][j] = value;
+    setBoard(newBoard);
   }
+
+  const value = getBoard()[i][j];
 
   return (
     <>
@@ -27,9 +35,9 @@ export default function Cell(props: Props) {
           type="number" 
           min={min}
           max={max}
-          value={props.value ?? ""}
+          value={value ?? ""}
           onInput={handleOnInput}
-          readOnly={props.value !== null}
+          readOnly={value !== null}
         />
       </div>
     </>
