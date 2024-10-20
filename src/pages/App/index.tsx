@@ -1,6 +1,6 @@
-import { createSignal, JSX } from "solid-js";
+import { createEffect, createSignal, JSX } from "solid-js";
 
-import { makeBoard } from '@/lib/board'
+import { Board as BoardType, makeBoard } from '@/lib/board'
 
 import Board from '@/components/Board'
 
@@ -15,6 +15,10 @@ function App() {
   
   const [board, setBoard] = createSignal(makeBoard(boardSize, nBlanks()));
   const handleRefreshBoard = () => setBoard(makeBoard(boardSize, nBlanks()));
+
+  createEffect(() => {
+    console.log('update board: %o', board());
+  })
 
   return (
     <>
@@ -38,6 +42,7 @@ function App() {
       </div>
       <Board
         board={board()}
+        onChangeBoard={setBoard}
       />
     </>
   )

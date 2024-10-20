@@ -1,40 +1,41 @@
-import { createMemo } from "solid-js";
-
 import { Board as BoardData } from "@/lib/board";
 
-import Box, { SIZE as BoxSize } from "./Box";
-
 import "./style.css";
+import Cell from "./Cell";
 
 type Props = {
   board: BoardData
+  onChangeBoard: (board: BoardData) => void
 }
 
 export default function Board(props: Props) {
-  const box = createMemo(() => 
-    Array.from({ length: BoxSize }, (_, i) => (
-      Array.from({ length: BoxSize }, (_, j) => (
-        Array.from({ length: BoxSize }, (_, k) => (
-          Array.from({ length: BoxSize }, (_, l) => (
-            props.board[i * BoxSize + k][j * BoxSize + l]
-          ))
-        ))
-      ))
-    ))
-  );
+  const boxSize = 3;
 
+  const onChangeCell = (i: number, j: number, v: number) => {
+    console.log(`onChangeCell(${i}, ${j}, ${v})`);
+    
+    props.board[i][j] = v;
+    props.onChangeBoard(props.board);
+  }
 
   return (
     <div class="board">
-      {box().map((row, i) => (
+      {Array.from({ length: boxSize }).map((_, i) => (
         <div class="row">
-          {row.map((v, j) => (
-            <Box
-              i={i}
-              j={j}
-              box={v}
-            />
+        {Array.from({ length: boxSize }).map((_, j) => (
+          <div class="box">
+          {Array.from({ length: boxSize }).map((_, k) => (
+            <div class="row">
+            {Array.from({ length: boxSize }).map((_, l) => (
+              <Cell
+                value={props.board[i * boxSize + k][j * boxSize + l]}
+                onChange={(value) => onChangeCell(i * boxSize + k, j * boxSize + l, value)}
+              />
+            ))}
+            </div>
           ))}
+          </div>
+        ))}
         </div>
       ))}
     </div>
