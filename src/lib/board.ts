@@ -30,7 +30,9 @@ export function makeBoard(size: number, nBlanks: number): Board {
   return board;
 }
 
-function generateBoard(size: number = 9): Board {
+function generateBoard(size: number): Board {
+  const boxSize = Math.sqrt(size);
+
   // init(null): number[size][size] => [[null, null, ..., null], ..., [null, null, ..., null]]
   const init = (): Board => Array.from({ length: size }, () => Array(size).fill({ state: 'undefined', value: null }));
   const copy = (b: Board): Board => b.map(row => row.slice());
@@ -71,9 +73,16 @@ function generateBoard(size: number = 9): Board {
     const numsInRowColumn = [
       ...Array.from({ length: size }, (_, k) => board[ni][k]),
       ...Array.from({ length: size }, (_, k) => board[k][nj])
-    ].filter(c => c.state == 'fixed');
+    ].filter(c => c.state == 'fixed').map(c => c.value);
+    const numsIsBox = Array.from({ length: boxSize }).map((_, k) =>
+      Array.from({ length: boxSize }).map((_, l) =>
+        board[(Math.floor(ni / boxSize) * boxSize) + k][(Math.floor(nj / boxSize) * boxSize) + l])
+    ).flat().filter(c => c.state == 'fixed').map(c => c.value);
 
-    const candidates = shuffleArray(NUMS.filter(v => !numsInRowColumn.map(c => c.value).includes(v)));
+    const candidates = shuffleArray(NUMS
+      .filter(v => !numsInRowColumn.includes(v))
+      .filter(v => !numsIsBox.includes(v))
+    );
     for (const c of candidates) {
       stack.push({
         i: ni,
