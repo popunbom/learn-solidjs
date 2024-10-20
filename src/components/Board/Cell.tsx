@@ -25,18 +25,26 @@ export default function Cell({ i, j }: Props) {
   }
 
   const cellValue = createMemo(() => getBoard()[i][j].value);
+  const isFixedCell = createMemo(() => {
+    const cell = getBoard()[i][j]
+    return cell.value !== null && cell.isFixed
+  });
   const cellState = createMemo(() => getBoard()[i][j].state);
 
   return (
     <>
-      <div class="cell" attr:cell-state={cellState()}>
+      <div 
+        class="cell" 
+        attr:cell-state={cellState()}
+        attr:fixed={isFixedCell()}
+      >
         <input 
           type="number" 
           min={min}
           max={max}
           value={cellValue() ?? ""}
           onInput={handleOnInput}
-          readOnly={cellState() === 'fixed'}
+          readOnly={isFixedCell()}
         />
       </div>
     </>

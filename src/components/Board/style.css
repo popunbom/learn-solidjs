@@ -21,7 +21,7 @@
   justify-content: center;
   align-items: center;
 
-  border: 1px solid #c6ccd6;
+  border: 1px solid #abb2bc;
 }
 
 .cell>input {
@@ -50,22 +50,21 @@ input::-webkit-inner-spin-button {
   margin: 0;
 }
 
-.cell[cell-state="fixed"] {
-  background-color: #eaeaea;
-  color: #888;
-}
-
 .cell[cell-state="defined"] {
-  background-color: #e0d5c4;
+  background-color: #d6c7b1;
   color: #9b610b;
 }
 
 .cell[cell-state="finished"] {
-  background-color: #d7e5da;
+  background-color: #c3dbc8;
   color: #00831c;
 }
 
 .cell[cell-state="error"] {
-  background-color: #f8d7da;
+  background-color: #e2bfc2;
   color: #721c24;
+}
+
+.cell[fixed=true] {
+  opacity: 0.4;
 }
