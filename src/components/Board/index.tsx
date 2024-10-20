@@ -2,7 +2,7 @@ import { createMemo } from "solid-js";
 
 import { Board as BoardData } from "@/lib/board";
 
-import Box from "./Box";
+import Box, { SIZE as BoxSize } from "./Box";
 
 import "./style.css";
 
@@ -11,14 +11,12 @@ type Props = {
 }
 
 export default function Board(props: Props) {
-  const boxSize = 3;
-  
   const box = createMemo(() => 
-    Array.from({ length: boxSize }, (_, i) => (
-      Array.from({ length: boxSize }, (_, j) => (
-        Array.from({ length: boxSize }, (_, k) => (
-          Array.from({ length: boxSize }, (_, l) => (
-            props.board[i * boxSize + k][j * boxSize + l]
+    Array.from({ length: BoxSize }, (_, i) => (
+      Array.from({ length: BoxSize }, (_, j) => (
+        Array.from({ length: BoxSize }, (_, k) => (
+          Array.from({ length: BoxSize }, (_, l) => (
+            props.board[i * BoxSize + k][j * BoxSize + l]
           ))
         ))
       ))
@@ -28,10 +26,12 @@ export default function Board(props: Props) {
 
   return (
     <div class="board">
-      {box().map((row) => (
+      {box().map((row, i) => (
         <div class="row">
-          {row.map((v) => (
+          {row.map((v, j) => (
             <Box
+              i={i}
+              j={j}
               box={v}
             />
           ))}
