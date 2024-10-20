@@ -1,10 +1,10 @@
+import { boxSize } from "@/states/board";
+
 import Cell from "./Cell";
 
 import "./style.css";
 
 export default function Board() {
-  const boxSize = 3;
-  
   return (
     <div class="board">
       {Array.from({ length: boxSize }).map((_, i) => (

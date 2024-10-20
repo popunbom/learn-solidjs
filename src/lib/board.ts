@@ -1,4 +1,14 @@
-export type Cell = number | null;
+export type FixedCell = { state: 'fixed', value: number };
+export type UndefinedCell = { state: 'undefined', value: null };
+export type DefinedCell = { state: 'defined', value: number };
+export type FinishedCell = { state: 'finished', value: number };
+export type ErrorCell = { state: 'error', value: number };
+
+export type ValueDefinedCell = FixedCell | DefinedCell | FinishedCell | ErrorCell;
+
+export type Cell = FixedCell | UndefinedCell | DefinedCell | FinishedCell | ErrorCell;
+
+
 export type Board = Cell[][];
 
 export function makeBoard(size: number, nBlanks: number): Board {
@@ -14,7 +24,7 @@ export function makeBoard(size: number, nBlanks: number): Board {
       }
     }
 
-    board[i][j] = null;
+    board[i][j] = { state: 'undefined', value: null };
   }
 
   return board;
@@ -22,7 +32,7 @@ export function makeBoard(size: number, nBlanks: number): Board {
 
 function generateBoard(size: number = 9): Board {
   // init(null): number[size][size] => [[null, null, ..., null], ..., [null, null, ..., null]]
-  const init = (iv: Cell): Board => Array.from({ length: size }, () => Array(size).fill(iv));
+  const init = (): Board => Array.from({ length: size }, () => Array(size).fill({ state: 'undefined', value: null }));
   const copy = (b: Board): Board => b.map(row => row.slice());
   const shuffleArray = <T>(a: T[]): T[] => a.slice().sort(() => Math.random() - 0.5);
 
@@ -40,8 +50,8 @@ function generateBoard(size: number = 9): Board {
     i: 0,
     j: 0,
     board: (() => {
-      const b = init(null);
-      b[0][0] = n;
+      const b = init();
+      b[0][0] = { state: 'fixed', value: n };
       return b;
     })(),
   }));
@@ -61,21 +71,21 @@ function generateBoard(size: number = 9): Board {
     const numsInRowColumn = [
       ...Array.from({ length: size }, (_, k) => board[ni][k]),
       ...Array.from({ length: size }, (_, k) => board[k][nj])
-    ].filter(v => v !== null);
+    ].filter(c => c.state == 'fixed');
 
-    const candidates = shuffleArray(NUMS.filter(v => !numsInRowColumn.includes(v)));
+    const candidates = shuffleArray(NUMS.filter(v => !numsInRowColumn.map(c => c.value).includes(v)));
     for (const c of candidates) {
       stack.push({
         i: ni,
         j: nj,
         board: (() => {
           const nb = copy(board);
-          nb[ni][nj] = c;
+          nb[ni][nj] = { state: 'fixed', value: c };
           return nb;
         })(),
       });
     }
   }
 
-  return init(0);
+  return init();
 }

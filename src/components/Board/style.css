@@ -21,7 +21,7 @@
   justify-content: center;
   align-items: center;
 
-  border: 1px solid #d5dde9;
+  border: 1px solid #c6ccd6;
 }
 
 .cell>input {
@@ -41,6 +41,7 @@
   font-size: 1.5em;
   text-align: center;
   font-family: inherit;
+  color: inherit;
 }
 
 .cell>input::-webkit-outer-spin-button,
@@ -49,7 +50,17 @@ input::-webkit-inner-spin-button {
   margin: 0;
 }
 
-.cell>input:read-only {
+.cell[cell-state="fixed"] {
   background-color: #eaeaea;
   color: #888;
+}
+
+.cell[cell-state="defined"] {
+  background-color: #e0d5c4;
+  color: #9b610b;
+}
+
+.cell[cell-state="finished"] {
+  background-color: #d7e5da;
+  color: #00831c;
 }

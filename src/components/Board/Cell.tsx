@@ -1,6 +1,7 @@
 import { JSX } from "solid-js/jsx-runtime"
 
-import { getBoard, setBoard } from "@/states/board"
+import { getBoard, updateBoard } from "@/states/board"
+import { createMemo } from "solid-js"
 
 type Props = {
   i: number
@@ -20,24 +21,22 @@ export default function Cell({ i, j }: Props) {
     }
     
     console.log(`[UPDATE] board[${i}][${j}] = ${value}`);
-    
-    const newBoard = getBoard().map((row) => row.slice());
-    newBoard[i][j] = value;
-    setBoard(newBoard);
+    updateBoard(i, j, value);
   }
 
-  const value = getBoard()[i][j];
+  const cellValue = createMemo(() => getBoard()[i][j].value);
+  const cellState = createMemo(() => getBoard()[i][j].state);
 
   return (
     <>
-      <div class="cell">
+      <div class="cell" attr:cell-state={cellState()}>
         <input 
           type="number" 
           min={min}
           max={max}
-          value={value ?? ""}
+          value={cellValue() ?? ""}
           onInput={handleOnInput}
-          readOnly={value !== null}
+          readOnly={cellState() === 'fixed'}
         />
       </div>
     </>
