@@ -1,4 +1,4 @@
-import { getBoard, getNBlanks, refreshBoard, setBoard, setNBlanks } from "@/states/board";
+import { getNBlanks, refreshBoard, setNBlanks } from "@/states/board";
 
 import Board from '@/components/Board'
 
